@@ -28,17 +28,37 @@ namespace LightningSDKPWMTest2
             this.InitializeComponent();
             InitGpio();
 
-            Brightness.ValueChanged += Brightness_ValueChanged;
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(1);
+            timer.Tick += Timer_Tick;
+            //Brightness.ValueChanged += Brightness_ValueChanged;
         }
 
-        private void Brightness_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        private void Timer_Tick(object sender, object e)
         {
-            double Percentage = e.NewValue / 100;
-            pwmled[0].SetActiveDutyCyclePercentage(Percentage);
-            pwmled[0].Start();
-
-            Output.Text = Percentage * 100 + "%";
+            int i = 0;
+            if (i < 100)
+            {
+                pwmled[0].SetActiveDutyCyclePercentage(i / 100);
+                pwmled[0].Start();
+                i++;
+            }
+            else
+            {
+                pwmled[0].SetActiveDutyCyclePercentage(i / 100);
+                pwmled[0].Start();
+                i = 0;
+            }
         }
+
+        //private void Brightness_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        //{
+        //    double Percentage = e.NewValue / 100;
+        //    pwmled[0].SetActiveDutyCyclePercentage(Percentage);
+        //    pwmled[0].Start();
+
+        //    Output.Text = Percentage * 100 + "%";
+        //}
 
         private async void InitGpio()
         {
@@ -70,5 +90,6 @@ namespace LightningSDKPWMTest2
         private const int Pins = 1;
         private static readonly int[] PWMLED = {4};
         private PwmPin[] pwmled = new PwmPin[Pins];
+        private DispatcherTimer timer;
     }
 }
